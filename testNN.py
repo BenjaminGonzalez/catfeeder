@@ -11,14 +11,27 @@ y = np.array(([75], [82], [93], [70]), dtype=float)
 X = X/np.amax(X, axis=0)
 y = y/100 #Max test score is 100
 
+def generatetrain(lenght,max):
+    X = np.random.randint(max+1, size=(lenght, 2))
+    y = []
+    for i in range(lenght):
+        y = np.append(y, [X[i][0]+X[i][1]])
+        #y[i] = X[i][0]+X[i][1]
+    return X.astype(float), y.astype(int).reshape(lenght, 1)
+
+train = generatetrain(1000, 10)
+#Training Data:
+trainX = np.array(train[0], dtype=float)
+trainY = np.array(train[1], dtype=float)
 
 #Training Data:
-trainX = np.array(([1,1], [2,2], [3,3], [4,4], [5,5], [6,6], [7,7], [0,0]), dtype=float)
-trainY = np.array(([2], [4], [6], [8], [10], [12], [14], [0]), dtype=float)
+#trainX = np.array(([1,1], [2,2], [3,3], [4,4], [5,5], [6,6], [7,7], [0,0]), dtype=float)
+#trainY = np.array(([2], [4], [6], [8], [10], [12], [14], [0]), dtype=float)
+#print trainY
 
 #Testing Data:
-testX = np.array(([0.5, 1.5], [3,5], [10, 4], [10, 2]), dtype=float)
-testY = np.array(([2], [8], [14], [12]), dtype=float)
+testX = np.array(([0.5, 1.5], [3,5.5], [10.2, 4.1], [10, 2]), dtype=float)
+testY = np.array(([2], [8.5], [14.3], [12]), dtype=float)
 
 #Normalize:
 normstep = np.amax(trainX, axis=0)
@@ -37,7 +50,7 @@ class Neural_Network(object):
         # Define Hyperparameters
         self.inputLayerSize = 2
         self.outputLayerSize = 1
-        self.hiddenLayerSize = 3
+        self.hiddenLayerSize = 10
 
         # Weights (parameters)
         self.W1 = np.random.randn(self.inputLayerSize, self.hiddenLayerSize)
@@ -213,5 +226,5 @@ while True:
     #X = X/normstep
     print "^^^^^^^^^"
     print "Imput: \n", X*normstep, '\n'
-    print 'Output: \n',round(NN.forward(X), 3)*100
+    print 'Output: \n',round(NN.forward(X), 2)*100
     print "^^^^^^^^^"
