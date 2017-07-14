@@ -65,7 +65,12 @@ while continue_reading:
         if status == MIFAREReader.MI_OK:
                 # Print UID
                 print("Card read UID: " + str(uid[0]) + "," + str(uid[1]) + "," + str(uid[2]) + "," + str(uid[3]))
-
+                for pulse in range(50, 250, 1):
+                        wiringpi.pwmWrite(18, pulse)
+                        time.sleep(delay_period)
+                for pulse in range(250, 50, -1):
+                        wiringpi.pwmWrite(18, pulse)
+                        time.sleep(delay_period)
                 # This is the default key for authentication
                 key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 
@@ -81,9 +86,3 @@ while continue_reading:
                         MIFAREReader.MFRC522_StopCrypto1()
                 else:
                         print("Authentication error")
-                for pulse in range(50, 250, 1):
-                        wiringpi.pwmWrite(18, pulse)
-                        time.sleep(delay_period)
-                for pulse in range(250, 50, -1):
-                        wiringpi.pwmWrite(18, pulse)
-                        time.sleep(delay_period)
