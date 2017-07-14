@@ -20,7 +20,7 @@ def store():
 	headers['Authorization'] = 'Basic STM0MjUwNTpUaGVvYmVhcmZhdDI='
 
 	r = http.urlopen('GET',
-					 'https://iotmmsi342505trial.hanatrial.ondemand.com/com.sap.iotservices.mms/v1/api/http/app.svc/NEO_AUDWFPK2YVE1TF8J4HHQQQYVJ.T_IOT_DE2D4CAFE79B98BCAD7A',
+					 'https://iotmmsi342505trial.hanatrial.ondemand.com/com.sap.iotservices.mms/v1/api/http/app.svc/NEO_AUDWFPK2YVE1TF8J4HHQQQYVJ.T_IOT_9C88AAFC8C032BA13B98',
 					 headers=headers)
 
 	print(r.status)

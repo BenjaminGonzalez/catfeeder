@@ -9,14 +9,18 @@ except ImportError:
 
 debug_communication = 0
 
-def send_to_hcp(http, url, headers, qltty, size, tim):
+def send_to_hcp(http, url, headers,dev,long,lat,tem,tur,ph,con):
     timestamp = int(time.time())
+    devicetype = '", "messages":[{"devicetype":"' + dev#input("What is your device Type: \n ")
     timestamp = ', "timestamp":' + str(timestamp)
-    quantity = '", "messages":[{"meal_qty":' + qltty
-    size = ', "meal_size":' + size
-    timebetw = ', "min_time_between":' + tim
+    longitude = '", "longitude":' + long#input("What is your Longitude: \n")
+    latitude = ', "latitude":' + lat #input("What is your Latitude: \n")
+    temp = ', "temp":' + tem#input("What is your measured temperature \n")
+    turb = ', "turb":' + tur# input("What is your measured turbitity: \n")
+    ph = ', "ph":' + ph#input("What is your ph: \n ")
+    conduct = ', "conduct":' + con# input("What is your conductivity: \n")
     body = '{"mode":"async", "messageType":"' + str(
-        config.message_type_id_From_device) + quantity + size + timebetw +timestamp + '}]}'
+        config.message_type_id_From_device) + devicetype + longitude + latitude + temp + turb + ph + conduct + timestamp + '}]}'
     #print('msg ID, ', config.message_type_id_From_device)
     print(body)
     r = http.urlopen('POST', url, body=body, headers=headers)
@@ -25,7 +29,7 @@ def send_to_hcp(http, url, headers, qltty, size, tim):
         print("send_to_hcp():" + str(r.status))
     print(r.data)
 
-def sendinfo(long,lat,tem):
+def sendinfo(dev,long,lat,tem,tur,ph,con):
     try:
         urllib3.disable_warnings()
     except:
@@ -48,7 +52,7 @@ def sendinfo(long,lat,tem):
     headers['Authorization'] = 'Bearer ' + config.oauth_credentials_for_device
     headers['Content-Type'] = 'application/json;charset=utf-8'
 
-    send_to_hcp(http, url, headers, str(long), str(lat), str(tem))
+    send_to_hcp(http, url, headers,str(dev), str(long), str(lat), str(tem), str(tur), str(ph), str(con))
 
 
 #sendinfo("port", 1.22334343, 43.2343, 23.44, 9.33, 1.5, 0.95)

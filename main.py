@@ -1,86 +1,43 @@
-import getfoodsettings as getsettings
-import getpyrequest as getdata
-import test_body as cateaten
-import time
-import datetime
-import re
+import getpyrequest as get
+import sendpydata as send
+import numpy as np
 
-import RPi.GPIO as GPIO
-import MFRC522
-import signal
-import time
-import wiringpi
+#read sensor data here
+#im going to do an example data here
+type = "porta"
+long = 1.2233434
+lat = 43.2343
+temp = 23.44
+turb = 9.33
+ph = 1.5
+cond = 0.95
 
-# use 'GPIO naming'
-wiringpi.wiringPiSetupGpio()
+send.sendinfo("port", 1.22334343, 43.2343, 23.44, 9.33, 1.5, 0.95)
 
-# set #18 to be a PWM output
-wiringpi.pinMode(18, wiringpi.GPIO.PWM_OUTPUT)
+arr= ["", "", "", "", "", "",str(temp), str(turb), str(ph), str(cond)]
 
-# set the PWM mode to milliseconds stype
-wiringpi.pwmSetMode(wiringpi.GPIO.PWM_MODE_MS)
+data = get.store()
+#data = [['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:23:20.318', '2017-07-06T03:23:17', 'flow', '72.150665', '69.266685', '56.475815', '1.1027783', '1.3488483', '0.7128033'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:24:21.145', '2017-07-06T03:24:18', 'flow', '165.32254', '51.523636', '53.54751', '0.47788486', '2.8511136', '0.21339445'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:24:36.146', '2017-07-06T03:24:34', 'port', '124.31113', '-43.30834', '40.033443', '3.6034358', '5.4931808', '0.92765343'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:24:47.147', '2017-07-06T03:24:46', 'flow', '-49.33701', '-34.079533', '21.25917', '3.5795496', '2.4890037', '0.72590154'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:25:47.153', '2017-07-06T03:25:45', 'flow', '-41.125732', '36.9344', '58.48286', '7.7968', '6.4466033', '0.3401735'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:25:52.153', '2017-07-06T03:25:50', 'port', '-49.03241', '80.81754', '28.132793', '1.1409942', '6.3418555', '0.37352005'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:25:57.154', '2017-07-06T03:25:54', 'flow', '169.52905', '-68.76219', '44.171127', '6.402567', '2.469365', '0.95384413'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:02.156', '2017-07-06T03:25:57', 'flow', '-80.7384', '74.14768', '49.72042', '1.4094337', '3.3704004', '0.6599299'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:02.156', '2017-07-06T03:26:01', 'port', '141.4555', '17.198977', '15.491518', '8.854589', '6.8098736', '0.11936222'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:07.155', '2017-07-06T03:26:05', 'port', '-72.974174', '14.967773', '29.099234', '3.2775707', '3.6557455', '0.008221027'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:12.156', '2017-07-06T03:26:08', 'port', '137.73538', '-11.700376', '21.946272', '3.5703769', '3.9832256', '0.65322345'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:12.156', '2017-07-06T03:26:10', 'flow', '-173.21062', '55.60042', '-17.70355', '3.2779398', '4.1430125', '0.15356135'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:12.156', '2017-07-06T03:26:11', 'flow', '-161.40482', '-60.34633', '50.6926', '7.440919', '4.3813796', '0.6987975'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:17.156', '2017-07-06T03:26:13', 'port', '97.551636', '41.910667', '-15.137501', '9.81872', '6.2538486', '0.6272618'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:17.156', '2017-07-06T03:26:15', 'flow', '1.5163516', '-51.65921', '16.935663', '4.626909', '2.9059129', '0.23634937'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:44.159', '2017-07-06T03:26:41', 'flow', '-46.759575', '80.16774', '39.02239', '4.5992312', '6.6061864', '0.66292703'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:44.159', '2017-07-06T03:26:43', 'port', '37.212273', '-27.4715', '49.264565', '9.870657', '1.8929439', '0.065242685'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:49.159', '2017-07-06T03:26:44', 'flow', '141.38153', '57.987354', '9.100439', '9.498278', '4.7851944', '0.23395653'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:49.159', '2017-07-06T03:26:45', 'flow', '-171.02666', '45.558147', '52.822536', '5.8420815', '6.829309', '0.3401281'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:49.159', '2017-07-06T03:26:46', 'port', '-48.172546', '43.049377', '44.892223', '1.7482941', '1.3896986', '0.48257285'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:49.159', '2017-07-06T03:26:47', 'flow', '23.750557', '-58.44743', '1.5936521', '9.433706', '2.0888531', '0.040246118'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:49.159', '2017-07-06T03:26:47', 'port', '-169.98761', '89.392914', '-2.6573985', '2.9244618', '2.323577', '0.32985845'], ['595deec6-97b1-49c7-a7f9-8c6bb34730a3', '2017-07-06T03:26:49.159', '2017-07-06T03:26:48', 'port', '-67.56636', '12.08751', '47.911663', '7.6343336', '5.31055', '0.94416195']]
+#data.append(arr)
+#for i in data:
+    #print(i)
 
-# divide down clock
-wiringpi.pwmSetClock(192)
-wiringpi.pwmSetRange(2000)
+data = [[float(i) for i in line[6:10]] for line in data]
 
-delay_period = 0.01
+arr = np.average(np.absolute(np.subtract(np.mean(data, axis=0)/np.amax(data, axis=0), np.array([float(i)for i in arr[6:10]])/np.amax(data, axis=0))))
 
-continue_reading = True
-
-
-# Capture SIGINT for cleanup when the script is aborted
-def end_read(signal, frame):
-        global continue_reading
-        print
-        "Ctrl+C captured, ending read."
-        continue_reading = False
-        GPIO.cleanup()
+print(round(arr*100, 2), "% away from the mean")
 
 
-# Hook the SIGINT
-signal.signal(signal.SIGINT, end_read)
-
-# Create an object of the class MFRC522
-MIFAREReader = MFRC522.MFRC522()
-
-
-
-
-
-while True:
-    sensor_data = int(input("type float to force input: #hint below 20 is an empty bowl\n"))
-    (status, TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
-
-    if status == MIFAREReader.MI_OK:
-        i = datetime.datetime.now()
-        data = getdata.store()
-        settings = getsettings.store()
-        #print (data)
-        settings = [[float(i) for i in line[3:6]] for line in settings]
-
-        for line in data:
-            date = line[2]
-            date = re.compile('(.*?)T', re.DOTALL | re.IGNORECASE).findall(date)
-
-            date = [x.split('-') for x in date]
-            date = [[int(x) for x in line] for line in date]
-
-        amount = date.count([i.year, i.month, i.day])
-        amountyesturday = amount + date.count([i.year, i.month, i.day-1])
-        if amount < settings[-1][0] or amountyesturday < settings[-1][0]*2:
-            print("the cat was starving and was given some food <3")
-            cateaten.sendinfo(1)
-            print('the catfeeder has given the cat ', settings[-1][1], 'g of food')
-            print('the catfeeder will now sleep for ', settings[-1][0], ' seconds')
-            time.sleep(settings[-1][2])
-        else:
-            print('the cat has already eaten its fill today')
-
-
-        print(settings[-1])
-
-
+'''
+arr_mean = np.mean(data, axis=0)/np.amax(data, axis=0)
+arr = np.array([float(i)for i in arr[6:10]])/np.amax(data, axis=0)
+arr = np.absolute(np.subtract(arr_mean, arr))
+print(arr)
+arr = np.absolute(arr)
+print(arr)
+print(np.average(arr))
+'''
 
 
 

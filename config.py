@@ -14,10 +14,9 @@ proxy_url=''
 # proxy_url='http://proxy_host:proxy_port'
 
 # the following values need to be taken from the IoT Cockpit
-device_id='8bfac326-b31c-426d-af79-03376b55d219'
-oauth_credentials_for_device='918317f7e62578bf89a6ae871fc1f389'
+device_id='595deec6-97b1-49c7-a7f9-8c6bb34730a3'
+oauth_credentials_for_device='900b2af6e86cbc727082eb3e985c'
 
-message_type_id_From_device='e05465244fbfb6272c49'
-message_type_id2_From_device='de2d4cafe79b98bcad7a'
+message_type_id_From_device='9c88aafc8c032ba13b98'
 
 # ===== nothing to be changed / configured below this line ===========

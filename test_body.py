@@ -1,52 +1,22 @@
-import urllib3
+import random
 import time
+import config
 
-try:
-    import config
-except ImportError:
-    print("Please copy template-config.py to config.py and configure appropriately !");
-    exit();
+timestamp = int(time.time())
 
-debug_communication = 0
+devicetype = '", "messages":[{"devicetype":"' +['flow', 'port'][random.randint(0, 1)]
+timestamp = ', "timestamp":' + str(timestamp)
+longitude = '", "longitude":' +str(random.uniform(-180, 180))
+latitude = ', "latitude":'+str(random.uniform(-90, 90))
+temp = ', "temp":'+str(random.uniform(-20, 60))
+turb = ', "turb":'+str(random.uniform(0, 10))
+ph = ', "ph":'+str(random.uniform(1, 7))
+conduct =', "conduct":'+str(random.uniform(0, 1))
 
-def send_to_hcp(http, url, headers, empty):
-    timestamp = int(time.time())
-    timestamp = ', "timestamp":' + str(timestamp)
-    quantity = '", "messages":[{"empty":' + empty
-    body = '{"mode":"async", "messageType":"' + str(
-        config.message_type_id2_From_device) + quantity +timestamp + '}]}'
-    #print('msg ID, ', config.message_type_id_From_device)
-    print(body)
-    r = http.urlopen('POST', url, body=body, headers=headers)
-    #print('POST', url, body, headers)
-    if (debug_communication == 1):
-        print("send_to_hcp():" + str(r.status))
-    print(r.data)
+body = '{"mode":"async", "messageType":"' + str(
+    config.message_type_id_From_device) + devicetype + longitude + latitude + temp + turb + ph + conduct + timestamp + '}]}'
 
-def sendinfo(long):
-    try:
-        urllib3.disable_warnings()
-    except:
-        print(
-            "urllib3.disable_warnings() failed - get a recent enough urllib3 version to avoid potential InsecureRequestWarning warnings! Can and will continue though.")
+print (body)
 
-    # use with or without proxy
-    if (config.proxy_url == ''):
-        http = urllib3.PoolManager()
-    else:
-        http = urllib3.proxy_from_url(config.proxy_url)
+body='{"mode":"async", "messageType":"' + str(config.message_type_id_From_device) + '", "messages":[{"sensor":"slider_device", "value":"' + str(5) + '", "timestamp":' + str(timestamp) + '}]}'
 
-    url = 'https://iotmms' + config.hcp_account_id + config.hcp_landscape_host + '/com.sap.iotservices.mms/v1/api/http/data/' + str(
-        config.device_id)
-    # print("Host   " + config.hcp_account_id + config.hcp_landscape_host)
-
-    headers = urllib3.util.make_headers(user_agent=None)
-
-    # use with authentication
-    headers['Authorization'] = 'Bearer ' + config.oauth_credentials_for_device
-    headers['Content-Type'] = 'application/json;charset=utf-8'
-
-    send_to_hcp(http, url, headers, str(long))
-
-
-#sendinfo("port", 1.22334343, 43.2343, 23.44, 9.33, 1.5, 0.95)
