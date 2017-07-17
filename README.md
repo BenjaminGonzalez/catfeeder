@@ -1,3 +1,3 @@
-# FirstNN
-This is my first NN
-based of a tutorial by welchlabs on youtube
+# This is a Catfeeder
+Yea its pretty cool
+uses the iot sap services for a speedy and responsive performance 
